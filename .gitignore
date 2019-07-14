@@ -148,3 +148,7 @@ data/
 # tag files
 tag*
 tag.*
+
+# home directory temporary
+.jupyter/
+.local
