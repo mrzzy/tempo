@@ -19,7 +19,7 @@ tempo-autobot:
 # execute rules
 run:
 	docker run -it \
-		-v $(shell pwd):/home/jovyan \
+		-v $(shell pwd):/tf \
 		-u $(shell id -u):$(shell id -g) \
 		-p 8888:8888  \
 		tempo-autobot:$(BUILD_TARGET) 
