@@ -35,12 +35,12 @@ TODO: refine & elaborate
 - models
     - autobot - automatic bot detection by anormaly detection
     - keyprint - user fingerprinting through keystroke dynamics
+- data
+    - datasets - datasets
 - lib - JS library to intergrate tempo with your site
 
 ## Datasets
-datasets are under `data/`
-
-### Keyboard
+#### Keyboard
 - `cmu_bench/` [Keystroke Dynamics - Benchmark Data Set CMU](https://www.cs.cmu.edu/~keystroke/)
 - `cmu_eval/` [Free vs. Transcribed Text for Keystroke-Dynamics Evaluations](http://www.cs.cmu.edu/~keystroke/laser-2012/)
 - `beihang_keys/` [The BeiHang Keystroke Dynamics Database](http://mpl.buaa.edu.cn/detail1.htm)
@@ -48,6 +48,6 @@ datasets are under `data/`
 - `greyc_keys/` [GREYC-KeyStroke Dataset](https://web.archive.org/web/20181017094316/http://www.epaymentbiometrics.ensicaen.fr/greyc-keystroke-dataset)
 - `greyc_web/` [GREYC-Web Based KeyStroke Dynamics Dataset](http://www.labri.fr/perso/rgiot/ressources/GREYC-WebDataset.html)
 
-### Touch Screen
+#### Touch Screen
 - `mobikey/` [ The MOBIKEY Keystroke Dynamics Password Database](https://ms.sapientia.ro/~manyi/mobikey.html#rawdata
 - `android_keys/` [Keystroke Dynamics - Android platform](https://ms.sapientia.ro/~manyi/keystroke.html)

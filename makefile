@@ -22,4 +22,5 @@ run:
 		-v $(shell pwd):/tf \
 		-u $(shell id -u):$(shell id -g) \
 		-p 8888:8888  \
+		--runtime nvidia \
 		tempo-autobot:$(BUILD_TARGET) 
