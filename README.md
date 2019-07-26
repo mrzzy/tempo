@@ -19,9 +19,6 @@ dynamic features, such as typing speed, are analysed.
 
 
 ### Models
-Bot detection is implemented using an anomaly detection model, we can determine if the
-keystrokes are from a human or bot. 
-
 For 2-factor authentication, an autoencoder
 model (similar to Facenet[1]) will be used to produce a embedding for keystroke
 dynamic features. The embedding is compared to a reference to determine if the
@@ -32,9 +29,9 @@ keystrokes are characteristic of the user.
 TODO: refine & elaborate
 
 ### Project Structure
-- models
-    - autobot - automatic bot detection by anormaly detection
+- src - project source code
     - keyprint - user fingerprinting through keystroke dynamics
+    - dataprep - utilities used for preparing data
 - data
     - datasets - datasets
 - lib - JS library to intergrate tempo with your site

@@ -1,13 +1,21 @@
 #
 # Tempo
+# Greyc Dataset
 # Data Prepration Utilties
 #
+
+import random
 
 import numpy as np
 import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+from multiprocessing import Pool, cpu_count
+
+FEATURE_VEC_LEN = 64
 
 # available features
 KEYSTROKE_FEATURES = [
@@ -85,6 +93,44 @@ def extract_keystroke_features(raw_press, raw_release,
 
     return feature_matrix
 
+## Generating pairwise features
+def generate_pair(arg):
+    i, keystroke_features, meta_df, real_user_indexes = arg
+    userid = meta_df.loc[i, "userid"]
+    target_userid = meta_df.loc[i, "target_userid"]
+    label = 1 if userid == target_userid else 0
+
+    # randomly choose other other pair
+    if not target_userid in real_user_indexes:
+        return None
+
+    ref_i = random.choice(real_user_indexes[target_userid])
+    return [keystroke_features[ref_i],  keystroke_features[i]], label
+
+def get_real_user_index(arg):
+    userid, meta_df = arg
+    real_user_index = meta_df.index[
+        (meta_df["userid"] == meta_df["target_userid"])
+        & (meta_df["userid"] == userid) ]
+
+    return userid, real_user_index
+
+# Generate pairwise features
+def generate_pair_features(keystroke_features, meta_df):
+    proc = Pool(cpu_count())
+    # compute the real indexes for each user
+    args = [[i, meta_df] for i in meta_df["userid"]]
+    results = proc.map(get_real_user_index, args)
+    real_user_indexes = dict(results)
+
+    ## generate features pais
+    args = [[i, keystroke_features, meta_df, real_user_indexes] for i in meta_df.index]
+    results = proc.map(generate_pair, args)
+    results = [ r for r in  results if not r is None ]
+    feature_pairs, labels = zip(*results)
+
+    return np.asarray(feature_pairs), np.asarray(labels)
+
 ## Transformers
 # Transformer for extract_keystroke_features()
 class KeystrokeFeatureExtractor(BaseEstimator, TransformerMixin):
@@ -96,5 +142,12 @@ class KeystrokeFeatureExtractor(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        extract_fn = (lambda x: extract_keystroke_features(*x, feature_names=self.feature_names))
-        return [ extract_fn(x) for x in X ]
+        extract_fn = (lambda x:
+                      extract_keystroke_features(*x, feature_names=self.feature_names))
+        features = [ extract_fn(x) for x in X ]
+
+        # Normalise features by padding feature vectors
+        features = pad_sequences(features,
+                                 maxlen=FEATURE_VEC_LEN,
+                                 dtype="float64", padding="post")
+        return features
